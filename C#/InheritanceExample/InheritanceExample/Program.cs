@@ -27,6 +27,12 @@ namespace InheritanceExample
             {
                 animal.sound();
             }
+            // When you create constructor in both classes i.e. parent and dervied classes, while object creation of derived classes both class constructor will be called.
+            // Similarly both static constructor will be called.
+
+            // When you create the same method called myMethod in both classes i.e. parent and dervied classes,
+            // while object creation of derived classes and call b.myMehtod, derived class method will be called because it will overwrite the method of parent classe..
+            // To call the parent call method you can add base.mymethod in derived class mymethod function.
             //myanimal.sound();
             //mypig.sound();
             //mydog.sound();

@@ -30,6 +30,8 @@ namespace Constructor_Example
             Console.WriteLine(featur.color);
             Console.WriteLine(featur.year);
             Console.WriteLine(featur.getmonth());
+            Console.WriteLine(featur);
+            Car.mymethod();
             Console.ReadLine();
 
         }
