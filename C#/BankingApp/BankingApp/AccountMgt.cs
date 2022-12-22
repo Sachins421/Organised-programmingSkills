@@ -54,9 +54,25 @@ namespace BankingApp
             comm = new SqlCommand("WithdrawAmount", conn);
 
             comm.CommandType = CommandType.StoredProcedure;
-            comm.Parameters.AddWithValue("@WithdrawAmount",accountno);
-            comm.Parameters.AddWithValue("@AccountNo",amount);
+            comm.Parameters.AddWithValue("@WithdrawAmount",amount);
+            comm.Parameters.AddWithValue("@AccountNo",accountno);
             comm.Parameters.Add(new SqlParameter("@result",SqlDbType.VarChar,30));
+            comm.Parameters["@result"].Direction = ParameterDirection.Output;
+            comm.ExecuteNonQuery();
+
+            String result = comm.Parameters["@result"].Value.ToString();
+            return result;
+        }
+
+        public string DeleteAccount(int accountno)
+        {
+            conn = ConnectionHelper.GetConnection();
+            conn.Open();
+            comm = new SqlCommand("DeletAccount", conn);
+
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.AddWithValue("@AccountNo", accountno);
+            comm.Parameters.Add(new SqlParameter("@result", SqlDbType.VarChar, 30));
             comm.Parameters["@result"].Direction = ParameterDirection.Output;
             comm.ExecuteNonQuery();
 

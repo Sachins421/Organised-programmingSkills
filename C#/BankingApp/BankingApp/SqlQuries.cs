@@ -82,7 +82,21 @@ begin
 
 end
 
+--Stored Procedure
 
+Create or alter proc dbo.[DeletAccount]
+						@AccountNo int,
+						@result varchar(30) output
+as 
+begin
+	if Exists (Select COUNT(1) from Account where AccountNo = @AccountNo) 
+		begin
+			delete Account where AccountNo = @AccountNo;
+			set @result = 'Record deleted..'
+		end
+	else
+		set @result = 'Record does not exist'
+end
 
 
 
