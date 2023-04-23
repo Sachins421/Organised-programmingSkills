@@ -24,16 +24,28 @@ namespace Constructor_Example
             // Second method using constructor
             // constructor is used initialized default value to the variable when object is created for the class, costructor is called itself when object is created regardless of calling
             // it.
-            Car featur = new Car("Mustang","red",2006);
+            //Car featur = new Car("Mustang","red",2006);
 
-            Console.WriteLine(featur.model);
-            Console.WriteLine(featur.color);
-            Console.WriteLine(featur.year);
-            Console.WriteLine(featur.getmonth());
-            Console.WriteLine(featur);
-            Car.mymethod();
+            //Console.WriteLine(featur.model);
+            //Console.WriteLine(featur.color);
+            //Console.WriteLine(featur.year);
+            //Console.WriteLine(featur.getmonth());
+            //Console.WriteLine(featur);
+            //Car.mymethod();
+           
+
+
+            Car car = new Car
+            {
+                color = "red",
+                model = "TATA",
+                year = 2012,
+            };
+            Console.WriteLine(car.model);
+            Console.WriteLine(car.color);
+            Console.WriteLine(car.year);
+
             Console.ReadLine();
-
         }
     }
 }
