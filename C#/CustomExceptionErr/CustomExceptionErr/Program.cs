@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CustomExceptionErr
 {
-    public class NegativeException : ApplicationException
+    public class NegativeException : Exception // Microsoft now recommends Exception class to create a custom exception class instead of ApplicationException.
     {
         public NegativeException(string error) : base(error)
         {
@@ -44,14 +44,12 @@ namespace CustomExceptionErr
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter two nos..");
-            int a = Convert.ToInt32( Console.ReadLine());
-            int b = Convert.ToInt32( Console.ReadLine());
-
             Program pr = new Program();
 
             try
             {
+                int a = Convert.ToInt32(Console.ReadLine());
+                int b = Convert.ToInt32(Console.ReadLine());
                 pr.calc(a, b);
             }
             catch (NegativeException e)
@@ -64,14 +62,15 @@ namespace CustomExceptionErr
 
                 Console.WriteLine(e.Message);
             }
-            catch(Exception e)
+            catch (Exception e) 
             {
                 Console.WriteLine(e.Message);
             }
             finally
             {
-                Console.WriteLine("sum up done.");
+                Console.WriteLine("Transaction done.");
             }
+            Console.ReadLine();
         }
     }
 }
