@@ -5,15 +5,13 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace FileDirectories
 {
     internal class ReadFile
     {
-        //public static string filePath = "C:\\Polling\\filename.txt";
-
-        //FileInfo fileInfo = new FileInfo(filePath);
-        //FileStream fileStream = fileInfo.Open(FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.ReadWrite);
-
+        public static string filePath = "C:\\Polling\\filename.txt";
+            
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics.Metrics;
 
 namespace FileDirectories
 {
@@ -23,7 +24,7 @@ namespace FileDirectories
             DateTime dateTime = File.GetLastWriteTime(filePath);
             Console.WriteLine(dateTime);
 
-            FileStream fs = File.Open(filePath, FileMode.OpenOrCreate);
+            //FileStream fs = File.Open(filePath, FileMode.OpenOrCreate);
 
             String fileRootPath = @"C:\Temp\Demo";
 
@@ -34,6 +35,8 @@ namespace FileDirectories
                 Console.WriteLine(dirPath);
             }
 
+            //Get file path and check the directory for files
+
             var filepath = Directory.GetFiles(fileRootPath, "*.*", SearchOption.AllDirectories);
 
             foreach (string dirPath in filepath)
@@ -42,6 +45,8 @@ namespace FileDirectories
                 Console.WriteLine(Path.GetFileNameWithoutExtension(dirPath));
                 Console.WriteLine(Path.GetFullPath(dirPath));
             }
+
+            // Check if directory exist
 
             bool dirExist =  Directory.Exists(fileRootPath); 
 
@@ -54,6 +59,15 @@ namespace FileDirectories
                 Console.WriteLine("not exist, but now created");
                 Directory.CreateDirectory(fileRootPath);    
             }
+            
+            // Reading file
+            string[] var = File.ReadAllLines(filePath);
+
+            foreach(string varPath in var)
+            {
+                Console.WriteLine(varPath);
+            }
+            
         }
 }
 }
