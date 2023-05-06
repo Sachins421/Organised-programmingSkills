@@ -37,6 +37,7 @@ namespace Method
             Console.WriteLine(para.add(1,2,3,4,5,6,6));
             Console.WriteLine(para.add(1, 2));
 
+            Console.ReadLine();
 
         }
 
