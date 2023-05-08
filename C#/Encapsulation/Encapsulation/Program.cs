@@ -101,9 +101,9 @@ namespace PracticeCsharp
 
         // Delegate 
 
-        public delegate decimal CalculaterHander(decimal a, decimal b);
+        public delegate decimal CalculaterHandler(decimal a, decimal b); // Delegates are sometimes referred to as Callback Functions
 
-        public decimal CalculateInput(decimal a, decimal b, CalculaterHander calculaterHander) // Implement single method reference
+        public decimal CalculateInput(decimal a, decimal b, CalculaterHandler calculaterHander) // Implement single method reference
         {
             calculaterHander(a,b);
             return 0;
@@ -178,7 +178,7 @@ namespace PracticeCsharp
             Console.WriteLine("---Delegate---");
             Console.WriteLine();
             // call or pass method reftence By creating a object of delegate 
-            var handler = new CalculaterHander(s.Subtract);
+            var handler = new CalculaterHandler(s.Subtract);
             Console.WriteLine(handler(10,5));
             handler(10,5);
 
@@ -191,15 +191,19 @@ namespace PracticeCsharp
             Console.WriteLine("------Mulitcast Delgate------");
             Console.WriteLine();
 
-            var handler2 = new CalculaterHander(s.add);
-            handler2 += new CalculaterHander(s.Subtract);
-            handler2 += new CalculaterHander((arg1, arg2) => {
+            //Delegates can be combined with + and - operators to stack them and remove them from the stack to be executed.
+            //As we'll see with Events in the next section, adding and removing references to delegates is very important.
+
+
+            var handler2 = new CalculaterHandler(s.add);
+            handler2 += new CalculaterHandler(s.Subtract);
+            handler2 += new CalculaterHandler((arg1, arg2) => {
                 var output = arg1 * arg2;
                 Console.WriteLine("Mulitplication is : " + output); // Queue or stack all method ref in one variable and pass the reg to delegate handler method
                 return output;
             });
 
-            handler2 -= new CalculaterHander(s.add); //Subtract method reference from the stack which was added earlier 
+            handler2 -= new CalculaterHandler(s.add); //Subtract method reference from the stack which was added earlier 
 
             s.CalculateInput(10, 5, handler2); // mulitple method references 
 
