@@ -48,9 +48,9 @@ namespace LINQAndExtensionMethod
             //    Console.WriteLine(values.Current);
             //}
 
-            //Card Sachin = "joker";
+            Card Sachin = "joker";
 
-            //Console.WriteLine(Sachin); debug this 
+            Console.WriteLine(Sachin); //debug this 
 
             Console.WriteLine(TheDeck.Count());
 
