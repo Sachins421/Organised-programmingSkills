@@ -8,6 +8,7 @@ namespace InterfaceDemo
 {
     public interface IProductModel
     {
+        //Members in interface are public by default
         string Title { get; set; }
         bool HasOrderBeenCompleted { get; }
         void ShipOrder(CustomerModel customerModel);

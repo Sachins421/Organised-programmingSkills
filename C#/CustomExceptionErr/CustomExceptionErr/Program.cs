@@ -50,7 +50,8 @@ namespace CustomExceptionErr
             {
                 int a = Convert.ToInt32(Console.ReadLine());
                 int b = Convert.ToInt32(Console.ReadLine());
-                pr.calc(a, b);
+                //cal.calc(a, b);
+                cal.DivideHandled(a, b);
             }
             catch (NegativeException e)
             {
@@ -62,7 +63,14 @@ namespace CustomExceptionErr
 
                 Console.WriteLine(e.Message);
             }
-            catch (Exception e) 
+            catch (BetterDivisionException e) 
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine($"Values were input : {e.Dividend} / {e.Divisor}");
+                Console.WriteLine(e.StackTrace);
+                //throw e; // it does not show the stack
+            }
+            catch(Exception e) 
             {
                 Console.WriteLine(e.Message);
             }
