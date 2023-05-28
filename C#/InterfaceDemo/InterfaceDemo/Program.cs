@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace InterfaceDemo
@@ -24,6 +25,35 @@ namespace InterfaceDemo
                 Console.WriteLine();
                 Console.WriteLine("Order is completed.");
             }
+
+            int publiceILoggerErrrorcount(ILogger logger)
+            {
+                return logger.ErrorCount;
+            }
+
+            Console.WriteLine("ILogger");
+
+            var dl = new DisplayLogger();
+            dl.LogError("this is the error.");
+            Console.WriteLine(dl.ErrorCount);
+            Console.WriteLine(publiceILoggerErrrorcount(dl));
+
+            Console.WriteLine("Explicit implementation");
+            var dbs = new DBLogger();
+            //db.LogError("This is the error from main method."); // can not called.
+            ILogger db = new DBLogger();
+            db.LogError("This is the error from main method.");
+            //Console.WriteLine(dbs.GetType()); // show same type dblogger
+            //Console.WriteLine(db.GetType()); // show same type dblogger
+
+            Console.WriteLine("********Default implementation********");
+            var il = new NewThing();
+            il.DoSomethingElse();
+            //il.DoTheThing();
+
+            ILogger2 IL = new NewThing();
+            IL.DoTheThing(); // if not implemented then default will be called
+
         }
 
         static CustomerModel GetCustomer()
@@ -54,5 +84,6 @@ namespace InterfaceDemo
 
             return product;
         }
+
     }
 }
