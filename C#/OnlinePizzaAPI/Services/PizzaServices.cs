@@ -1,49 +1,76 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using OnlinePizzaAPI.Models;
 
 namespace OnlinePizzaAPI.Services
 {
     public class PizzaServices
     {
-        static List<Pizza> pizzas;
-        static int nextId = 4;
+        private readonly IMongoCollection<Pizza> mongoCollection;
 
-        static PizzaServices() 
+        public PizzaServices(IOptions<PizzaStoreDatabaseSettings> DatabaseSettings) 
         {
-            pizzas = new List<Pizza>
-            {
-                new Pizza { Id = 1 , Name = "Classic Italian", IsGlutenFree = true},
-                new Pizza { Id = 2 , Name = "Classic Veggie", IsGlutenFree = true},
-                new Pizza { Id = 3 , Name = "Mozorilla", IsGlutenFree = true}
-            };
+
+            var mongoclient = new MongoClient(DatabaseSettings.Value.connectionString);
+                
+            var mongodb = mongoclient.GetDatabase(DatabaseSettings.Value.databaseName);
+
+            mongoCollection = mongodb.GetCollection<Pizza>(DatabaseSettings.Value.PizzaCollectionName);
+            //pizzas = new List<Pizza>
+            //{
+            //    new Pizza { Id = 1 , Name = "Classic Italian", IsGlutenFree = true},
+            //    new Pizza { Id = 2 , Name = "Classic Veggie", IsGlutenFree = true},
+            //    new Pizza { Id = 3 , Name = "Mozorilla", IsGlutenFree = true}
+            //};
         }
 
-        public static List<Pizza> Getall() => pizzas;
+        public async Task<List<Pizza>> GetallAsync() => await mongoCollection.Find(_=> true).ToListAsync();
 
-        public static Pizza? Get(int id) => pizzas.FirstOrDefault(p => p.Id == id); 
+        public async Task<Pizza?> GetAsync(int id) => await mongoCollection.Find(x =>x.Key == id).FirstOrDefaultAsync();
 
-        public static void add(Pizza pizza) 
+        public async Task CreateAsync(Pizza pizza)
         {
-            pizza.Id = nextId++;
-            pizzas.Add(pizza);
+            await mongoCollection.InsertOneAsync(pizza);
         }
 
-        public static void Delete(int id)
+        public async Task UpdateAsync(int id, Pizza pizza)
         {
-            var pizza = Get(id);
-            if (pizza is null)
-                return;
-
-            pizzas.Remove(pizza);
+            await mongoCollection.ReplaceOneAsync(p => p.Key == id, pizza);
+          
         }
 
-        public static void Update(Pizza pizza)
+        public async Task RemoveAsync(int id)
         {
-            var index = pizzas.FindIndex(p => p.Id == pizza.Id);
-            if (index == -1)
-                return;
-
-            pizzas[index] = pizza;
+            await mongoCollection.DeleteOneAsync(p => p.Key == id);
         }
+
+        //public static List<Pizza> Getall() => pizzas;
+
+        //public static Pizza? Get(int id) => pizzas.FirstOrDefault(p => p.Id == id); 
+
+        //public static void add(Pizza pizza) 
+        //{
+        //    pizza.Id = nextId++;
+        //    pizzas.Add(pizza);
+        //}
+
+        //public static void Delete(int id)
+        //{
+        //    var pizza = Get(id);
+        //    if (pizza is null)
+        //        return;
+
+        //    pizzas.Remove(pizza);
+        //}
+
+        //public static void Update(Pizza pizza)
+        //{
+        //    var index = pizzas.FindIndex(p => p.Id == pizza.Id);
+        //    if (index == -1)
+        //        return;
+
+        //    pizzas[index] = pizza;
+        //}
     }
 }
