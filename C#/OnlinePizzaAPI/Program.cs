@@ -28,6 +28,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<BasicAuthentication>();
+
 app.UseAuthorization();
 
 app.MapControllers();
