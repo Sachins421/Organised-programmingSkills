@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.Runtime.Internal.Transform;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
@@ -7,7 +8,25 @@ using System.Threading.Tasks;
 
 namespace JsonReader
 {
+    public class DialingCodes
+    {
+        Dictionary<int, string> countryCodeDic = new Dictionary<int, string>();
 
+        static Dictionary<int, string> GetEmptyDictionary() => new();
+
+        static Dictionary<int, string> GetExistingDictionary()
+        {
+            var numbers = new Dictionary<int, string> { [1] = "United states Of America" };
+            var id = numbers[1];
+           //numbers.Values.OrderByDescending()
+            return numbers;
+        }
+
+        public static void AddCountryToEmptyDictionary(int countryCode, string countryName)
+        {
+            
+        }
+    }
     public enum AccountType
     {
         Guest,
