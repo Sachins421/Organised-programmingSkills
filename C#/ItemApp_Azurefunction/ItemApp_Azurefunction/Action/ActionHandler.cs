@@ -10,36 +10,31 @@ namespace ItemApp_Azurefunction.Action
 {
     public static class ActionHandlerExtension
     {
-        public async static Task CreateHandler(ActionRequest actionRequest)
+        public async static Task CreateHandler(ActionRequest actionRequest, ItemHandler itemHandler)
         {
             //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
             var request = actionRequest.ToModel();
-
-            await ItemHandler.Create(request);
+            await itemHandler.Create(request);
+        }
+        public async static Task UpdateHandler(ActionRequest actionRequest, ItemHandler itemHandler)
+        {
+            //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
+            var request = actionRequest.ToModel();
+ 
+            await itemHandler.Update(actionRequest.No, request);
+        }
+        public async static Task<List<ProductModel>> ReadHandler(ActionRequest actionRequest, ItemHandler itemHandler)
+        {
+            //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
+            var request = actionRequest.ToModel();
+            return await itemHandler.Read(actionRequest.No);
         }
 
-        public async static Task UpdateHandler(ActionRequest actionRequest)
+        public async static Task DeleteHandler(ActionRequest actionRequest, ItemHandler itemHandler)
         {
             //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
             var request = actionRequest.ToModel();
-
-            await ItemHandler.Update(actionRequest.No, request);
-        }
-
-        public async static Task<List<ProductModel>> ReadHandler(ActionRequest actionRequest)
-        {
-            //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
-            var request = actionRequest.ToModel();
-
-            return await ItemHandler.Read(actionRequest.No);
-        }
-
-        public async static Task DeleteHandler(ActionRequest actionRequest)
-        {
-            //var request = ProductToActionExtension.ToModel(); //complaing for the parameter
-            var request = actionRequest.ToModel();
-
-            await ItemHandler.Delete(actionRequest.No);
+            await itemHandler.Delete(actionRequest.No);
         }
     }
 }

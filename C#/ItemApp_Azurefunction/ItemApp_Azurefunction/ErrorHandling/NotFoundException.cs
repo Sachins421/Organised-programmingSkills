@@ -15,14 +15,14 @@ namespace ItemApp_Azurefunction.ErrorHandling
         protected NotFoundException(System.Runtime.Serialization.SerializationInfo info,
         System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
 
-        public string? Id { get; set; }
+        //public string? Id { get; set; }
 
-        public string? No { get; set; }
+        //public string? No { get; set; }
 
-        public string? ItemName { get; set; }
+        //public string? ItemName { get; set; }
 
-        public string? Quantity { get; set; }
+        //public string? Quantity { get; set; }
 
-        public decimal? Price { get; set; }
+        //public decimal? Price { get; set; }
     }
 }

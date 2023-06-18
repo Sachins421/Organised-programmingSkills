@@ -9,13 +9,19 @@ using MongoDB.Driver;
 
 namespace ItemApp_Azurefunction.Modal
 {
-    public static class ItemHandler
+    public class ItemHandler
     {
-        public static async Task Create(ProductModel action)
+        private IMongoClient _client;
+        private IMongoDatabase _database;   
+        public ItemHandler(IMongoClient mongoClient, IMongoDatabase mongoDatabase) 
         {
-            var client = new MongoClient(Environment.GetEnvironmentVariable("MongoConnectionString"));
-            var MongoDb = client.GetDatabase(Environment.GetEnvironmentVariable("MongoDatabase"));
-            var collection = MongoDb.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
+            _client = mongoClient ?? throw new ArgumentNullException(nameof(mongoClient));
+            _database = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase)); 
+        }
+
+        public async Task Create(ProductModel action)
+        {
+            var collection = _database.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
 
             IndexKeysDefinition<ProductModel> indexKeys = "{ No : 1 }";
             var indexModal = new CreateIndexModel<ProductModel>(indexKeys);
@@ -23,11 +29,9 @@ namespace ItemApp_Azurefunction.Modal
             await collection.InsertOneAsync(action);
         }
 
-        public static async Task Update(string productid, ProductModel actionRequest)
+        public async Task Update(string productid, ProductModel actionRequest)
         {
-            var client = new MongoClient(Environment.GetEnvironmentVariable("MongoConnectionString"));
-            var MongoDb = client.GetDatabase(Environment.GetEnvironmentVariable("MongoDatabase"));
-            var collection = MongoDb.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
+            var collection = _database.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
             
             var filter = new FilterDefinitionBuilder<ProductModel>().Where(r => r.No == productid); // class is used to build filter definitions for MongoDB queries.
 
@@ -42,11 +46,9 @@ namespace ItemApp_Azurefunction.Modal
             await collection.UpdateOneAsync(filter, update);
         }
 
-        public static async Task<List<ProductModel>> Read(string productid)
+        public async Task<List<ProductModel>> Read(string productid)
         {
-            var client = new MongoClient(Environment.GetEnvironmentVariable("MongoConnectionString"));
-            var MongoDb = client.GetDatabase(Environment.GetEnvironmentVariable("MongoDatabase"));
-            var collection = MongoDb.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
+            var collection = _database.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
 
             // check if item input is valid 
             var Isitemfound = await collection.Find(x => x.No == productid).FirstOrDefaultAsync();
@@ -58,14 +60,12 @@ namespace ItemApp_Azurefunction.Modal
             var ListOfItems = await collection.Find(f => f.No == productid).ToListAsync();
 
             return ListOfItems;
-
         }
 
-        public static async Task Delete(string productid)
+        public async Task Delete(string productid)
         {
-            var client = new MongoClient(Environment.GetEnvironmentVariable("MongoConnectionString"));
-            var MongoDb = client.GetDatabase(Environment.GetEnvironmentVariable("MongoDatabase"));
-            var collection = MongoDb.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
+
+            var collection = _database.GetCollection<ProductModel>(Environment.GetEnvironmentVariable("MongoDBCollection")); // Define your ProductModel class to adapt collection
 
             var filter = new FilterDefinitionBuilder<ProductModel>().Where(r => r.No == productid); // class is used to build filter definitions for MongoDB queries.
 

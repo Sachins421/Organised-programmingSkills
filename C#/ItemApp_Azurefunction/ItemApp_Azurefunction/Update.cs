@@ -12,10 +12,16 @@ using MongoDB.Bson;
 
 namespace ItemApp_Azurefunction.Modal
 {
-    public static class Function
+    public class Update
     {
+        private ItemHandler _itemHandler;
+        public Update(ItemHandler itemHandler) 
+        {
+            _itemHandler = itemHandler;
+        }
+
         [FunctionName("update")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -24,7 +30,7 @@ namespace ItemApp_Azurefunction.Modal
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody);
 
-                await ActionHandlerExtension.UpdateHandler(data);
+                await ActionHandlerExtension.UpdateHandler(data, _itemHandler);
 
                 return new OkObjectResult($"Product {data.No} is udpated.");
             }

@@ -8,13 +8,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ItemApp_Azurefunction.Action;
+using ItemApp_Azurefunction.Modal;
 
 namespace ItemApp_Azurefunction
 {
-    public static class Read
+    public class Read
     {
+        private ItemHandler _itemHandler;
+        public Read(ItemHandler itemHandler) 
+        {
+            _itemHandler = itemHandler; 
+        }
         [FunctionName("Read")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -22,10 +28,8 @@ namespace ItemApp_Azurefunction
             { 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody);
-
                 //await ActionHandlerExtension.ReadHandler(data);
-
-                return new OkObjectResult(await ActionHandlerExtension.ReadHandler(data));
+                return new OkObjectResult(await ActionHandlerExtension.ReadHandler(data, _itemHandler));
             }
             catch (Exception ex)
             {
