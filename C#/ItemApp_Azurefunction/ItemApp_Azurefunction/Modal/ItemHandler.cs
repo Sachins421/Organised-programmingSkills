@@ -9,7 +9,7 @@ using MongoDB.Driver;
 
 namespace ItemApp_Azurefunction.Modal
 {
-    public class ItemHandler
+    public class ItemHandler : IItemRepository
     {
         private IMongoClient _client;
         private IMongoDatabase _database;   
@@ -59,7 +59,7 @@ namespace ItemApp_Azurefunction.Modal
 
             var ListOfItems = await collection.Find(f => f.No == productid).ToListAsync();
 
-            return ListOfItems;
+            return ListOfItems; 
         }
 
         public async Task Delete(string productid)

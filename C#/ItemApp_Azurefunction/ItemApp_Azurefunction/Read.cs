@@ -7,18 +7,20 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ItemApp_Azurefunction.Action;
-using ItemApp_Azurefunction.Modal;
+using ItemApp_Azurefunction.Query;
+using MediatR;
+
 
 namespace ItemApp_Azurefunction
 {
     public class Read
     {
-        private ItemHandler _itemHandler;
-        public Read(ItemHandler itemHandler) 
+        private IMediator _imediator;
+        public Read(IMediator imediator) 
         {
-            _itemHandler = itemHandler; 
+            _imediator = imediator; 
         }
+     
         [FunctionName("Read")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
@@ -27,9 +29,11 @@ namespace ItemApp_Azurefunction
             try 
             { 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody);
+                QueryR data = JsonConvert.DeserializeObject<QueryR>(requestBody);
                 //await ActionHandlerExtension.ReadHandler(data);
-                return new OkObjectResult(await ActionHandlerExtension.ReadHandler(data, _itemHandler));
+
+                var result = await _imediator.Send(data);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {

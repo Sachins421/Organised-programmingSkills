@@ -7,20 +7,18 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ItemApp_Azurefunction.Modal;
-using Microsoft.VisualBasic;
+using MediatR;
 using ItemApp_Azurefunction.Action;
-using System.Reflection.Metadata;
 
 namespace ItemApp_Azurefunction
 {
     public class Create
     {
-        private ItemHandler _itemHandler;
+        private IMediator _imediator;
 
-        public Create(ItemHandler itemHandler) 
+        public Create(IMediator mediator) 
         {
-            _itemHandler = itemHandler;
+            _imediator = mediator;
         }
 
         [FunctionName("Create")]
@@ -28,12 +26,13 @@ namespace ItemApp_Azurefunction
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            // Command Query Responsibility Segregation (CQRS)
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody); //cast to oject ProductModel
+                CreateCommand data = JsonConvert.DeserializeObject<CreateCommand>(requestBody); //cast to oject ProductModel
 
-                await ActionHandlerExtension.CreateHandler(data, _itemHandler);
+                await _imediator.Send(data);
 
                 var result = "Product created.";
                 return new OkObjectResult(result);

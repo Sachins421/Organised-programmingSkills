@@ -10,16 +10,19 @@ using Newtonsoft.Json;
 using System.Xml.Linq;
 using ItemApp_Azurefunction.Action;
 using ItemApp_Azurefunction.Modal;
+using MediatR;
+using ItemApp_Azurefunction.Command.Delete;
 
 namespace ItemApp_Azurefunction
 {
     public class Delete
     {
-        private ItemHandler _itemHandler;
-        public Delete(ItemHandler itemHandler) 
+        private IMediator _imediator;
+        public Delete(IMediator imediator)
         {
-            _itemHandler = itemHandler;    
+            _imediator = imediator;
         }
+
         [FunctionName("Delete")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
@@ -28,9 +31,9 @@ namespace ItemApp_Azurefunction
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody);
-                
-                await ActionHandlerExtension.DeleteHandler(data, _itemHandler);
+                DeleteCommand data = JsonConvert.DeserializeObject<DeleteCommand>(requestBody);
+
+                await _imediator.Send(data);
 
                 return new OkObjectResult($"Product {data.No} is deleted.");
             }

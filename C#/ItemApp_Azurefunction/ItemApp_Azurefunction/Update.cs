@@ -9,15 +9,18 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ItemApp_Azurefunction.Action;
 using MongoDB.Bson;
+using ItemApp_Azurefunction.Command;
+using MediatR;
 
 namespace ItemApp_Azurefunction.Modal
 {
     public class Update
     {
-        private ItemHandler _itemHandler;
-        public Update(ItemHandler itemHandler) 
+        private IMediator _iMediator;
+
+        public Update(IMediator iMediator)
         {
-            _itemHandler = itemHandler;
+            _iMediator = iMediator;
         }
 
         [FunctionName("update")]
@@ -28,9 +31,9 @@ namespace ItemApp_Azurefunction.Modal
             try 
             { 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                ActionRequest data = JsonConvert.DeserializeObject<ActionRequest>(requestBody);
+                UpdateCommand data = JsonConvert.DeserializeObject<UpdateCommand>(requestBody);
 
-                await ActionHandlerExtension.UpdateHandler(data, _itemHandler);
+                await _iMediator.Send(data);
 
                 return new OkObjectResult($"Product {data.No} is udpated.");
             }

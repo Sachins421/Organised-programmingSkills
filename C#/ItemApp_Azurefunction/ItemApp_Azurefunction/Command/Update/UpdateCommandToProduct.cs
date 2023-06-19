@@ -2,16 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItemApp_Azurefunction.Action
+namespace ItemApp_Azurefunction.Command
 {
-     public static class ProductToActionExtension
+    public static class UpdateCommandToProduct
     {
-        // Extension class of Action class
-        public static ProductModel ToModel(this ActionRequest product)
+        // Extension class of UpdateCommand class
+        public static ProductModel ToModel(this UpdateCommand product)
         {
             return new ProductModel
             {

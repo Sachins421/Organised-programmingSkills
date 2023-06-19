@@ -14,7 +14,7 @@ namespace ItemApp_Azurefunction.Modal
 
             services.AddSingleton<IMongoDatabase>(v => v.GetRequiredService<IMongoClient>().GetDatabase(database));
 
-            services.AddScoped<ItemHandler>();
+            services.AddScoped<IItemRepository,ItemHandler>(); // in order first is interface then class 
 
             return services;
         }
