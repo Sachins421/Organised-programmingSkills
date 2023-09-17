@@ -14,6 +14,9 @@ builder.Configuration.GetSection("MongoDatabase").Bind(connectionsettings);
 builder.Services.ConfigurMongoDB();
 builder.Services.AddMediatR(sr => sr.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
+//var domainAssemblies = new[] { S, WebAPI.AssemblyIdentity.Assembly, Domain.AssemblyIdentity.Assembly };
+//services.AddMediatR(domainAssemblies);
+
 
 /*builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection((nameof(DatabaseSettings))));
 builder.Services.AddSingleton<DatabaseSettings>(s => s.GetRequiredService<IOptions<DatabaseSettings>>().Value);
