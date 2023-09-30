@@ -1,12 +1,10 @@
-﻿using Model.Data.ProductionLineRequest;
-using Model.Data.Repositries;
+﻿using Model.Data.Models.ProductionLineRequest;
 using Model.Data.Wrapper;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 
-namespace Service.Repositries
+namespace Model.Data.Repositries
 {
     public class ProductionLineRepository : IProductionLineRepository
     {
@@ -30,13 +28,48 @@ namespace Service.Repositries
             {
                 if (productionLines.Count > 0)
                 {
-                    var existingRecords = Builders<GlassProductionLineRequest>.Filter.In(x => x.Id, productionLines.Where(c => !c.IsDuplicate).Select(x => x.Id));
-                    var projection = Builders<GlassProductionLineRequest>.Projection.Expression(c => PrepareProductionLineProjection(c));
+                    // this filter did not work so had to create seprate filter for all the fields.
+                    //var existingRecords = Builders<GlassProductionLineRequest>.Filter.In(s => s.Id.id, productionLines.Where(c => !c.IsDuplicate).Select(i => i.Id.id));
+                    
+                    var existingRecords = new List<FilterDefinition<GlassProductionLineRequest>>();
+                    existingRecords.Add(Builders<GlassProductionLineRequest>.Filter.In(s => s.Id.id, productionLines.Where(c => !c.IsDuplicate).Select(i => i.Id.id)));
+                    existingRecords.Add(Builders<GlassProductionLineRequest>.Filter.In(s => s.Id.LineNo, productionLines.Where(c => !c.IsDuplicate).Select(i => i.Id.LineNo)));
+                    existingRecords.Add(Builders<GlassProductionLineRequest>.Filter.In(s => s.Id.SalesChannel, productionLines.Where(c => !c.IsDuplicate).Select(i => i.Id.SalesChannel)));
+                    existingRecords.Add(Builders<GlassProductionLineRequest>.Filter.In(s => s.Id.SalesCountryISO, productionLines.Where(c => !c.IsDuplicate).Select(i => i.Id.SalesCountryISO)));
+
+                    var filter = Builders<GlassProductionLineRequest>.Filter.And(existingRecords);
+
+                    // this too did not work landed in exception
+                    //var projection = Builders<GlassProductionLineRequest>.Projection.Expression(c => PrepareProductionLineProjection(c));
+                    var projection = Builders<GlassProductionLineRequest>.Projection.Expression(c => new GlassProductionLineRequest
+                    {
+                        Id = c.Id,
+                        Execution = new Execution
+                        {
+                            GlassRequest = new Model.Data.Models.ProductionLineRequest.GlassRequests.GlassRequest
+                            {
+                                BaseData = new Model.Data.Models.ProductionLineRequest.GlassRequests.BaseData
+                                {
+                                    GlassRequestEntryNo = c.Execution.GlassRequest.BaseData.GlassRequestEntryNo,
+                                    SalesChannelERP = c.Execution.GlassRequest.BaseData.SalesChannelERP,
+                                    BarcodePreManufacturing = c.Execution.GlassRequest.BaseData.BarcodePreManufacturing
+                                },
+                                Availabilities = c.Execution.GlassRequest.Availabilities,
+                                Item = new Model.Data.Models.ProductionLineRequest.GlassRequests.Item
+                                {
+                                    ItemNo = c.Execution.GlassRequest.Item.ItemNo
+                                }
+                            },
+                            TimeStamp = c.Execution.TimeStamp,
+                            GlassRequestEntryNo = c.Execution.GlassRequestEntryNo
+                        },
+                    });
+
 
                     var options = new FindOptions<GlassProductionLineRequest, GlassProductionLineRequest> { Projection = projection };
 
-                    var existingIds = await _glassProductionLineRequest.GetCollection().Find(existingRecords).Project<GlassProductionLineRequest>(projection).ToListAsync();
-
+                    var existingIds = await _glassProductionLineRequest.GetCollection().Find(filter).Project<GlassProductionLineRequest>(projection).ToListAsync();
+                    //var existingIds = await _glassProductionLineRequest.GetCollection().Find(filter).ToListAsync();
                     foreach (var productionLine in productionLines)
                     {
                         if (productionLine.IsDuplicate)
@@ -46,7 +79,7 @@ namespace Service.Repositries
                         }
                         else
                         {
-                            var correspondingRecord = existingIds.Any() ? existingIds.Where(c => c.Id == productionLine.Id
+                            var correspondingRecord = existingIds.Any() ? existingIds.Where(c => c.Id.id == productionLine.Id.id
                                 && c.Id.SalesCountryISO == productionLine.Id.SalesCountryISO
                                 && c.Id.LineNo == productionLine.Id.LineNo
                                 && c.Id.SalesChannel == productionLine.Id.SalesChannel).ToList().FirstOrDefault() : null;
@@ -129,24 +162,19 @@ namespace Service.Repositries
                 response.idAndLockTockens = duplicateToken;
                 return response;
             }
-            
-
-
-            //var mongoCollection = database.GetCollection<GlassRequest>(databaseSettings.collection);
-            
-
-            //var addProductionLine = new List<UpdateOneModel<ProductionLineRequest>>();
-
-            //var filterRecord = Builders<ProductionLineRequest>.Filter.In(x => x.Id);
-
-            //await mongoCollection.InsertOneAsync(productionline);
-
 
         }
 
-        public async Task GetProductionLinebyId(string id)
+        public async Task<GlassProductionLineRequest> GetProductionLinebyId(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<GlassProductionLineRequest>.Filter.Eq(s => s.Id.id , id);
+             
+            
+            var glassProductionLineRequest = await _glassProductionLineRequest.GetCollection().Find(filter).FirstOrDefaultAsync();
+            return glassProductionLineRequest;
+            // this can also be done via Expression delgate function 
+            // public ValueTask<ProductionLineRequest> ReadProductionLineByIdAsync(Expression<Func<ProductionLineRequest, bool>> matches)
+            //=> _productionLineRepository.FindOneAsync(matches);
         }
 
         private static GlassProductionLineRequest PrepareProductionLineProjection(GlassProductionLineRequest prodline)
@@ -156,16 +184,16 @@ namespace Service.Repositries
                 Id = prodline.Id,
                 Execution = new Execution
                 {
-                    GlassRequest = new Model.Data.ProductionLineRequest.GlassRequests.GlassRequest
+                    GlassRequest = new Model.Data.Models.ProductionLineRequest.GlassRequests.GlassRequest
                     {
-                        BaseData = new Model.Data.ProductionLineRequest.GlassRequests.BaseData
+                        BaseData = new Model.Data.Models.ProductionLineRequest.GlassRequests.BaseData
                         {
                             GlassRequestEntryNo = prodline.Execution.GlassRequest.BaseData.GlassRequestEntryNo,
                             SalesChannelERP = prodline.Execution.GlassRequest.BaseData.SalesChannelERP,
                             BarcodePreManufacturing = prodline.Execution.GlassRequest.BaseData.BarcodePreManufacturing
                         },
                         Availabilities = prodline.Execution.GlassRequest.Availabilities,
-                        Item = new Model.Data.ProductionLineRequest.GlassRequests.Item
+                        Item = new Model.Data.Models.ProductionLineRequest.GlassRequests.Item
                         {
                             ItemNo = prodline.Execution.GlassRequest.Item.ItemNo
                         }

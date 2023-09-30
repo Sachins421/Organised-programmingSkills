@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Domain.Mapping.Dto.Dto;
-using Service.Repositries;
+using Domain.Mapping.GlassRequestDto;
+using Model.Data.Repositries;
 using Model.Data.Wrapper;
 using Domain.Mapping.Dto;
 
@@ -20,9 +20,6 @@ namespace Service.GlassRequestCommand
 
             var glassRequestSBMessage = request.GlassRequestSBMessage;
             var idandListToken = await ProcessBatchGlassRequest(glassRequestSBMessage.ToList());
-
-            idandListToken = (List<IdAndLockTocken>)idandListToken.Select(com => com.MessageId == "new message Id");
-
             return new GlassRequestCommandResponse
             {
                 IdAndLockTokenList = idandListToken,
@@ -52,12 +49,9 @@ namespace Service.GlassRequestCommand
             var response = await _productionLineRepository.ProcessUpsertProductionLineAsync(glassLineToProcess);
 
             //faking response for now
-            response.idAndLockTockens = new List<IdAndLockTocken>
-            {
-                new IdAndLockTocken { MessageId = "new message Id",LockToken = "123", DeadLetter = false, DeliveryCount = 1    }
-            };
+            var res = response.idAndLockTockens.ToList();
 
-            return response.idAndLockTockens;
+            return res;
         }
     }
 }

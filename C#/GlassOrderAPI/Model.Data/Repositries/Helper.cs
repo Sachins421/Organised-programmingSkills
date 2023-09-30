@@ -20,7 +20,8 @@ namespace Model.Data.Repositries
                 DeliveryCount = deliveryCount,
                 Success = success,
                 IsDuplicate = isDuplicate,
-                Reason = reason
+                Reason = reason,
+                IsEvent = true
 
             };
         }

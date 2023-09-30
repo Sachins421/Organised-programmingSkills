@@ -15,7 +15,8 @@ namespace Model.Data.Repositries
             _logger = logger;
             _database = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
             _mongoClient = mongoClient ?? throw new ArgumentNullException(nameof(mongoClient));
-            _collection = _database.GetCollection<TDocument>(nameof(TDocument));
+            //_collection = _database.GetCollection<TDocument>(nameof(TDocument).Name);
+            _collection = _database.GetCollection<TDocument>(typeof(TDocument).Name);
         }
 
         public IMongoDatabase GetDatabase()

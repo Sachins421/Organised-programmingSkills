@@ -13,8 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Utilities\Request\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Domain.Mapping.Dto\Domain.Mapping.Dto.csproj" />
-    <ProjectReference Include="..\Model.Data\Model.Data.csproj" />
   </ItemGroup>
 
 </Project>

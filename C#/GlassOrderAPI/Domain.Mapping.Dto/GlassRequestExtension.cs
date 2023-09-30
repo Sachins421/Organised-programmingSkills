@@ -1,13 +1,15 @@
-﻿using Domain.Mapping.Dto;
+﻿using Amazon.Auth.AccessControlPolicy.ActionIdentifiers;
+using Domain.Mapping.Dto;
+using Model.Data.Models.ProductionLineRequest;
 using Model.Data.Repositries;
-using model = Model.Data.ProductionLineRequest;
+using model = Model.Data.Models.ProductionLineRequest;
 
-namespace Domain.Mapping.Dto
+namespace Domain.Mapping.GlassRequestDto
 {
 #pragma warning disable CS8601
     public static class GlassRequestExtension
     {
-        public static model.GlassProductionLineRequest ToModel(this GlassRequest glassRequest)
+        public static GlassProductionLineRequest ToModel(this GlassRequest glassRequest)
         {
             return new model.GlassProductionLineRequest
             {
@@ -21,6 +23,10 @@ namespace Domain.Mapping.Dto
 
                 Execution = new model.Execution
                 {
+                    TimeStamp = glassRequest.TimeStamp,
+                    Source = glassRequest.Source,
+                    GlassRequestEntryNo = glassRequest.BaseData.GlassRequestEntryNo,
+
                     GlassRequest = new model.GlassRequests.GlassRequest
                     {
                         GlassColors = glassRequest.GlassColor?.Select(x => new model.GlassRequests.GlassColor
@@ -144,7 +150,7 @@ namespace Domain.Mapping.Dto
                         Source = glassRequest.Source,
                         TimeStamp = glassRequest.TimeStamp,
                     }
-                }
+                } 
 
             };
         }

@@ -1,4 +1,4 @@
-﻿using Model.Data.ProductionLineRequest;
+﻿using Model.Data.Models.ProductionLineRequest;
 using Model.Data.Repositries;
 
 namespace Model.Data.Wrapper

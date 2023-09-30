@@ -1,4 +1,4 @@
-﻿using Domain.Mapping.Dto.Dto;
+﻿using Domain.Mapping.GlassRequestDto;
 using MediatR;
 
 namespace Service.GlassRequestCommand

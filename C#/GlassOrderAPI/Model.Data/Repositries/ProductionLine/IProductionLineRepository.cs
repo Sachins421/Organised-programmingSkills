@@ -1,11 +1,12 @@
-﻿using Model.Data.Wrapper;
+﻿using Model.Data.Models.ProductionLineRequest;
+using Model.Data.Wrapper;
 
-namespace Service.Repositries
+namespace Model.Data.Repositries
 {
     public interface IProductionLineRepository
     {
         Task<ResponseWrapper> ProcessUpsertProductionLineAsync(List<GlassRequestMessageWrapper> glassRequest);
 
-        Task GetProductionLinebyId(string id);
+        Task<GlassProductionLineRequest> GetProductionLinebyId(string id);
     }
 }

@@ -2,8 +2,8 @@
 using Model.Data.Repositries;
 using MongoDB.Driver;
 using Microsoft.Extensions.DependencyInjection;
-using Service.Repositries;
 using MongoDB.Driver.Core.Servers;
+using Model.Data.Repositries.Setup;
 
 namespace Data.DatabaseSetting
 {
@@ -14,11 +14,9 @@ namespace Data.DatabaseSetting
             services.AddSingleton<IMongoClient>(s =>
             {
                 var consettings = s.GetRequiredService<DBSettings>();
-                var clientSettings = new MongoClientSettings
-                {
-                    Server =  new MongoServerAddress(consettings.ConnectionString)
-            };
-                return new MongoClient(clientSettings);
+                var mongourl = new MongoUrl(consettings.ConnectionString);
+                MongoClientSettings mongoClientSettings = MongoClientSettings.FromUrl(mongourl);
+                return new MongoClient(mongoClientSettings);
             });
 
             //services.AddSingleton<IMongoDatabase>(s => s.GetRequiredService<MongoClient>().GetDatabase());
@@ -28,8 +26,8 @@ namespace Data.DatabaseSetting
 
             services.AddScoped(typeof(IMongoRepository<>),typeof(MongoRepository<>));
             services.AddScoped<IProductionLineRepository, ProductionLineRepository>();
-           
-
+            services.AddScoped<ISetupRepository, SetupRepository>();
+ 
             return services;
         }
     }
