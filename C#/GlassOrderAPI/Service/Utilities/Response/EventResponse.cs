@@ -16,6 +16,7 @@ namespace Service.Utilities.Response
         public string subject { get; set; }
         public string id { get; set; }
         public string version { get; set; }
+        public string eventTime { get; set; }
         public dynamic data { get; set; }
         public bool isCompressed { get; set; }
         public DateTime? lastUpdatedSetupTimeStamp { get; set; }

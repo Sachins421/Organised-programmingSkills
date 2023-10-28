@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace Domain.Mapping.GlassRequestDto
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public class GlassRequest
     {
+
         public SourceInformation SourceInformation { get; set; }
 
         public BaseData BaseData { get; set; }

@@ -1,12 +1,7 @@
 ﻿using Model.Data.Models.Setups;
 using Model.Data.Wrapper;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Model.Data.Repositries.Setup
 {
@@ -20,7 +15,7 @@ namespace Model.Data.Repositries.Setup
         }
         public async Task<SetupResponseWrapper> CreateSetupAsync(SetupData setupData)
         {
-            var filter = Builders<SetupData>.Filter.Eq(s => s._id, setupData._id) &
+            var filter = Builders<SetupData>.Filter.Eq(s => s.id, setupData.id) &
                             Builders<SetupData>.Filter.Eq(s => s.Company, setupData.Company);
 
             var result = await _setupData.GetCollection().ReplaceOneAsync(filter, setupData, new ReplaceOptions { IsUpsert = true });
@@ -31,7 +26,7 @@ namespace Model.Data.Repositries.Setup
             {
                 var response1 = Helper.ReturnIdAndLockTocken(
                     null,
-                    setupData._id,
+                    setupData.id,
                     setupData.Company,
                     1,
                     true,
@@ -40,7 +35,7 @@ namespace Model.Data.Repositries.Setup
                     );
                 var res = new SetupResponseWrapper
                 {
-                    IdAndLockTocken = resultToken,
+                    IdAndLockTocken = response1,
                 };
                 
                 return res;
@@ -48,7 +43,7 @@ namespace Model.Data.Repositries.Setup
 
            var response = Helper.ReturnIdAndLockTocken(
                     null,
-                    setupData._id,
+                    setupData.id,
                     setupData.Company,
                     1,
                     true,
@@ -57,18 +52,17 @@ namespace Model.Data.Repositries.Setup
                     );
             var s = new SetupResponseWrapper
             {
-                IdAndLockTocken = resultToken,
+                IdAndLockTocken = response,
             };
             return s;
         }
 
 
-        public async Task<SetupData> ReadSetupAsync(string id)
+        public async Task<SetupData> ReadSetupAsync()
         {
-            var filter = Builders<SetupData>.Filter.Eq(s => s._id, id);
-                           
+            Expression<Func<SetupData,bool>> expression = p => !string.IsNullOrEmpty(p.id);
 
-            var result = await _setupData.GetCollection().Find(filter).FirstOrDefaultAsync();
+            var result = await _setupData.GetCollection().Find(expression).FirstOrDefaultAsync();
 
             return result;
 

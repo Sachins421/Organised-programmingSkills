@@ -15,26 +15,30 @@ namespace Service.Utilities.Helper
         public static EventResponse CreateEventResponse(List<IdAndLockTocken> idAndLockTockens)
         {
          #pragma warning disable CS8603 // Possible null reference return.
-            return idAndLockTockens.Where(id => id.IsEvent).Select(idAndLockTockens =>
+            return idAndLockTockens.Where(id => id.IsEvent || !id.Success).Select(idAndLockTockens =>
              {
                  var response = new EventResponse();
                  response.Topic = idAndLockTockens.Topic;
-                 response.data = new Service.Utilities.Response.Data
+                  #pragma warning disable CS8601 // Possible null reference assignment.
+                 response.data = idAndLockTockens.Id != null ? new Service.Utilities.Response.Data
                  {
                      Event = new EventData
                      {
-                         sourceInformation = new SourceInformation
+                         sourceInformation = idAndLockTockens.IsEvent ? new SourceInformation
                          {
                              Id = idAndLockTockens.Id.id,
                              SalesChannel = idAndLockTockens.Id.SalesChannel,
                              SalesCountryISO = idAndLockTockens.Id.SalesCountryISO,
                              LineNo = idAndLockTockens.Id.LineNo
-                         }
-                         
+                         } : null,
+
                      },
-                 };
+
+                 } : null;
+                    #pragma warning restore CS8601 // Possible null reference assignment.
                  response.version = "1.0";
                  response.subject = idAndLockTockens.Subject;
+                 response.id = Guid.NewGuid().ToString();
                  response.isCompressed = false;
                  response.lastUpdatedSetupTimeStamp = idAndLockTockens.LastUpdatedSetupTimeStamp;
 

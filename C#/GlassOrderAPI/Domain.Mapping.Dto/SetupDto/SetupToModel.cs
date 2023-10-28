@@ -8,7 +8,7 @@ namespace Domain.Mapping.Dto.SetupDto
         {
             return new model.SetupData
             {
-                _id = "default",
+                id = "default",
                 Company = "default_company",
                 MessageID = data.MessageID,
                 TimeStamp = data.TimeStamp,
@@ -23,7 +23,7 @@ namespace Domain.Mapping.Dto.SetupDto
                     SecondChoiceARCode = data.BaseData.SecondChoiceARCode,
                 },
 
-                GlassThicknessMinMax = data.GlassThicknessMinMax.Select(s => new model.GlassThicknessMinMax
+                GlassThicknessMinMax = data.GlassThicknessMinMax?.Select(s => new model.GlassThicknessMinMax
                 {
                     glassPackageType = s.glassPackageType,
                     GlassThickness = s.GlassThickness,
@@ -44,7 +44,7 @@ namespace Domain.Mapping.Dto.SetupDto
                         NextStepCondition = s.NextStepCondition,    
                         EventType = s.EventType,    
                     }).ToList(),
-                    errorMappings = s.errorMappings.Select(s => new model.ErrorMapping
+                    errorMappings = s.errorMappings?.Select(s => new model.ErrorMapping
                     {
                         ErrorType = s.ErrorType,
                         ActionType = s.ActionType,
@@ -77,7 +77,7 @@ namespace Domain.Mapping.Dto.SetupDto
                         StandardTinge = s.StandardTinge,
                         Tinged = s.Tinged,
 
-                        Priorities = s.Priorities.Select(p => new model.Priorities
+                        Priorities = s.Priorities?.Select(p => new model.Priorities
                         {
                             Manufacturers = p.Manufacturers.Select(m => new model.Manufacturers
                             {

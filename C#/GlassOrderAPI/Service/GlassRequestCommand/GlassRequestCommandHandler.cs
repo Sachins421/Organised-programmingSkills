@@ -3,21 +3,25 @@ using Domain.Mapping.GlassRequestDto;
 using Model.Data.Repositries;
 using Model.Data.Wrapper;
 using Domain.Mapping.Dto;
+using Model.Data.Repositries.Setup;
 
 namespace Service.GlassRequestCommand
 {
     public class GlassRequestCommandHandler : IRequestHandler<ProcessBatchGlassRequestCommand, GlassRequestCommandResponse>
     {
         private readonly IProductionLineRepository _productionLineRepository;
+        private readonly ISetupRepository _setupRepository;
 
-        public GlassRequestCommandHandler(IProductionLineRepository productionLineRepository)
+        public GlassRequestCommandHandler(IProductionLineRepository productionLineRepository, ISetupRepository setupRepository)
         {
             _productionLineRepository = productionLineRepository;
+            _setupRepository = setupRepository;
         }
 
         public async Task<GlassRequestCommandResponse> Handle(ProcessBatchGlassRequestCommand request, CancellationToken cancellationToken)
         {
-
+            var setupData = _setupRepository.ReadSetupAsync();
+            
             var glassRequestSBMessage = request.GlassRequestSBMessage;
             var idandListToken = await ProcessBatchGlassRequest(glassRequestSBMessage.ToList());
             return new GlassRequestCommandResponse

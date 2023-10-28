@@ -8,7 +8,7 @@ namespace Domain.Mapping.Dto.SetupDto
 {
     public class SetupData
     {
-        public SourceInformation SourceInformation { get; set; }
+        public SourceInformation? SourceInformation { get; set; }
 
         public BaseData BaseData { get; set; }
 

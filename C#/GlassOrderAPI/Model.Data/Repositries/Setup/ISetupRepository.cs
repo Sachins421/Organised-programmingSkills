@@ -6,6 +6,6 @@ namespace Model.Data.Repositries.Setup
     public interface ISetupRepository
     {
         Task<SetupResponseWrapper> CreateSetupAsync(SetupData setupData);
-        Task<SetupData> ReadSetupAsync(string id);
+        Task<SetupData> ReadSetupAsync();
     }
 }

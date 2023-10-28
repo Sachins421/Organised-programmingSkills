@@ -10,7 +10,7 @@ namespace Domain.Mapping.Dto.SetupDto
     public class Combinations
     {
         public bool Disabled { get; set; }
-        public string GlassGroupCode { get; set; }
+        public string? GlassGroupCode { get; set; }
         public int ParameterNo { get; set; }
         public GlassType GlassType { get; set; }
         public bool Tinged { get; set; }
@@ -27,6 +27,6 @@ namespace Domain.Mapping.Dto.SetupDto
         public bool Mirrored { get; set; }
         public FieldofVision fieldofVision { get; set; }
         public bool AutoSelectionEnabled { get; set; }
-        public List<Priorities> Priorities { get; set; }
+        public List<Priorities>? Priorities { get; set; }
     }
 }

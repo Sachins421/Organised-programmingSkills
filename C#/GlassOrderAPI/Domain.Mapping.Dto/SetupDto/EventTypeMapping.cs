@@ -12,6 +12,6 @@ namespace Domain.Mapping.Dto.SetupDto
         public string EventType { get; set; }
         public List<NextSteps> NextSteps { get; set; }
         public int MaxRetryAttempts { get; set; }
-        public List<ErrorMapping> errorMappings { get; set; }   
+        public List<ErrorMapping>? errorMappings { get; set; }   
     }
 }
