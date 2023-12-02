@@ -22,4 +22,5 @@ $Arrayvar2[3] = "New value"
 $Arrayvar2[4] = 300
 
 $Arrayvar2[1] = 100 + 200
-
+Write-Output("-------")
+Write-Output($Arrayvar2)
