@@ -12,10 +12,10 @@ codeunit 50001 PaymentMgt
 
     end;
 
-    procedure ProcessPaymentForSalesOrder()
+    procedure ProcessPaymentForSalesOrder(SalesOrderNo : Code[20]; OrderAmount: Decimal)
     var
     begin
-
+        CreateAndPostGenJnlLine(SalesOrderNo,OrderAmount);
     end;
 
     local procedure CreateAndPostGenJnlLine(salesOrderNo: Code[20]; OrderAmount: Decimal)
@@ -27,7 +27,7 @@ codeunit 50001 PaymentMgt
         GenJournalLine."Document No." := salesOrderNo;
         GenJournalLine."Line No." := 10000;
         GenJournalLine.Validate("Account Type", GenJournalLine."Account Type"::Customer);
-        GenJournalLine.Validate(Amount, OrderAmount);
+        GenJournalLine.Validate(Amount, OrderAmount * -1);
         GenJournalLine.Validate("Bal. Account Type", GenJournalLine."Bal. Account Type"::"G/L Account");
         GenJournalLine.Validate("Bal. Account No.", '2910'); // can be used as setup instead harcode 
 

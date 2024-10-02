@@ -10,8 +10,11 @@ codeunit 50000 CU414Subcriber
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Sales Document", 'OnAfterReleaseSalesDoc', '', true, true)]
     local procedure onAfterSalesOrderRelease(SalesHeader: Record "Sales Header"; PreviewMode: Boolean; LinesWereModified: Boolean; SkipWhseRequestOperations: Boolean)
+    var
+        PaymentMgt: Codeunit PaymentMgt;
     begin
-
+        SalesHeader.CalcFields("Amount Including VAT");
+        PaymentMgt.ProcessPaymentForSalesOrder(SalesHeader."No.", SalesHeader."Amount Including VAT")
     end;
 
     var
