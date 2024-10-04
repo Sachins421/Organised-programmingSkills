@@ -28,6 +28,11 @@ table 50000 PaymentTrancsaction
         {
 
         }
+
+        field(6; "File"; Blob)
+        {
+
+        }
     }
 
     keys
@@ -43,7 +48,7 @@ table 50000 PaymentTrancsaction
         }
     }
 
-    
+
 
     fieldgroups
     {

@@ -12,10 +12,10 @@ codeunit 50001 PaymentMgt
 
     end;
 
-    procedure ProcessPaymentForSalesOrder(SalesOrderNo : Code[20]; OrderAmount: Decimal)
+    procedure ProcessPaymentForSalesOrder(SalesOrderNo: Code[20]; OrderAmount: Decimal)
     var
     begin
-        CreateAndPostGenJnlLine(SalesOrderNo,OrderAmount);
+        CreateAndPostGenJnlLine(SalesOrderNo, OrderAmount);
     end;
 
     local procedure CreateAndPostGenJnlLine(salesOrderNo: Code[20]; OrderAmount: Decimal)
@@ -32,6 +32,13 @@ codeunit 50001 PaymentMgt
         GenJournalLine.Validate("Bal. Account No.", '2910'); // can be used as setup instead harcode 
 
         GenJnlPostLine.RunWithCheck(GenJournalLine);
+    end;
+
+    procedure ErrorInfoMethod(ErrInfor: ErrorInfo)
+    var
+        myInt: Integer;
+    begin
+        Message('ErrorInforMethod was called');
     end;
 
     var

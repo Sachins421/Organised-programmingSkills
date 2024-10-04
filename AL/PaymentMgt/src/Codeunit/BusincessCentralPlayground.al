@@ -5,7 +5,135 @@ codeunit 50002 BusincessCentralPlayground
         Customer, Customer1 : Record Customer; // Define multiple var in single lines
     trigger OnRun()
     begin
+        FilterPageBuilder();
+        FieldRefDataType();
+        ErrorInfoDataType();
+        EnumDataType();
+        dialogBox();
+        CallOverloadedFunction();
+    end;
 
+    local procedure FilterPageBuilder()
+    var
+        varDateItem: Text[30];
+        varDateRecord: Record Date;
+        varFilterPageBuilder: FilterPageBuilder;
+        varCount: Integer;
+        varIndex: Integer;
+        Customer: Record Customer;
+        Item: Record Item;
+        varDefaultView: Text;
+    begin
+        Message('----FilterPageBuilder---');
+        varDateItem := 'Date record';
+        varFilterPageBuilder.AddRecord(varDateItem, varDateRecord);
+        varFilterPageBuilder.AddField(varDateItem, varDateRecord."Period End", '12122015D');
+        varFilterPageBuilder.AddField(varDateItem, varDateRecord."Period Start");
+        varFilterPageBuilder.RunModal();
+
+        Message('---with Name---');
+        varDateItem := 'Date record';
+        varFilterPageBuilder.AddTable(varDateItem + ' 1', Database::Date);
+        varFilterPageBuilder.AddTable(varDateItem + ' 2', Database::Date);
+        varCount := varFilterPageBuilder.COUNT;
+        if varCount <> 2 then
+            Error('There should be two controls in FilterPageBuilder');
+        for varIndex := 1 to varCount do
+            Message('Control item %1 is named %2', varIndex, varFilterPageBuilder.Name(varIndex));
+        varFilterPageBuilder.RunModal();
+
+        Message('---with Page caption---');
+        varFilterPageBuilder.AddRecord('Item Table', Item);
+        varFilterPageBuilder.Addfield('Item Table', Item."No.", '>100');
+        varFilterPageBuilder.PageCaption := 'Item Filter Page';
+        varFilterPageBuilder.RunModal;
+        Item.SetView(varFilterPageBuilder.Getview('Item Table'));
+
+        Message('---veiw of the filter page builder---');
+        varDateItem := 'Date record';
+        varDateRecord.SetFilter("Period End", '20151212D');
+        varDateRecord.SetFilter("Period Start", '20150101D');
+        varDefaultView := varDateRecord.GetView;
+        varFilterPageBuilder.AddTable(varDateItem, Database::Date);
+        varFilterPageBuilder.SetView(varDateItem, varDefaultView);
+        varFilterPageBuilder.RunModal();
+    end;
+
+
+    local procedure FieldRefDataType()
+    var
+        RecRef: RecordRef;
+        fieldRef: FieldRef;
+        i: Integer;
+    begin
+        Message('---fieldRef----');
+        RecRef.Open(Database::Customer);
+        fieldRef := RecRef.Field(1);
+        fieldRef.SetRange(30000);
+        RecRef.Find('-');
+        for i := 1 to 5 do begin
+            fieldRef := RecRef.FieldIndex(i);
+            //fieldRef.CalcField();
+            if fieldRef.Active then
+                Message('acitve %1', i)
+            else
+                Message('not active %1', i);
+        end;
+        //other method of field ref are know 
+    end;
+
+    local procedure ErrorInfoDataType()
+    var
+        myInt: Integer;
+        ErrorInfoVar: ErrorInfo;
+        Customer: Record Customer;
+    begin
+        Message('--ErrorInfoDataType----');
+
+        //Creates a new ErrorInfo object with Collectible set to true.
+        ErrorInfoVar := ErrorInfo.Create('Error Info is being tested', true, Customer, 1);
+        Message('Errorinfor Create Method %1', ErrorInfoVar);
+        Clear(ErrorInfoVar);
+
+        //add action method
+        ErrorInfoVar.ErrorType(ErrorType::Client);
+        ErrorInfoVar.Verbosity(Verbosity::Error);
+        ErrorInfoVar.Message('Message was added to Errorinfor variable');
+        ErrorInfoVar.RecordId(Customer.RecordId);
+        ErrorInfoVar.AddAction('Addaction Method', Codeunit::PaymentMgt, 'ErrorInfoMethod', 'Description is added in Addaction method');
+        Message('callstask %1', ErrorInfoVar.Callstack);
+        Error(ErrorInfoVar);
+    end;
+
+    local procedure EnumDataType()
+    var
+        EnumDataType: Enum "Sales Document Type";
+        EnumReturnValue: Integer;
+        EnumNames: List of [Text];
+        Ordinals: List of [Integer];
+        i: Integer;
+    begin
+        Message('---EnumDataType----');
+        EnumReturnValue := EnumDataType.AsInteger();
+        Message('Enum as integer %1', EnumReturnValue);
+
+        EnumNames := EnumDataType.Names;
+        for i := 0 to EnumNames.Count do begin
+            Message('Enum datatype Name', EnumNames.Get(i));
+        end;
+        Ordinals := EnumDataType.Ordinals;
+        for i := 0 to Ordinals.Count do begin
+            Message('Ordinals %1', Ordinals.Get(i));
+        end;
+    end;
+
+    local procedure dialogBox()
+    var
+        dialogReturnValue: Boolean;
+    begin
+        dialogReturnValue := Dialog.Confirm('Exit without saving %1?', true, '1546546');
+        Message('You selected %1', dialogReturnValue);
+        //TransactionType only support Report and Xmlport.
     end;
 
     local procedure StringBuilderFunction()
