@@ -5,12 +5,30 @@ codeunit 50002 BusincessCentralPlayground
         Customer, Customer1 : Record Customer; // Define multiple var in single lines
     trigger OnRun()
     begin
+        httpCall();
         FilterPageBuilder();
         FieldRefDataType();
         ErrorInfoDataType();
         EnumDataType();
         dialogBox();
         CallOverloadedFunction();
+    end;
+
+    local procedure httpCall()
+    var
+        Client: HttpClient;
+        Response: HttpResponseMessage;
+        Request: HttpRequestMessage;
+        URL: Text;
+        ResponseText: Text;
+    begin
+        URL := 'https://openlibrary.org/search/lists.json?q=book&limit=5&offset=0';
+        Request.SetRequestUri(URL);
+        if Client.Send(Request, Response) then begin
+            Response.Content.ReadAs(ResponseText);
+            Message(ResponseText);
+        end;
+
     end;
 
     local procedure FilterPageBuilder()
