@@ -5,12 +5,30 @@ codeunit 50002 BusincessCentralPlayground
         Customer, Customer1 : Record Customer; // Define multiple var in single lines
     trigger OnRun()
     begin
+        httpCall();
         FilterPageBuilder();
         FieldRefDataType();
         ErrorInfoDataType();
         EnumDataType();
         dialogBox();
         CallOverloadedFunction();
+    end;
+
+    local procedure httpCall()
+    var
+        Client: HttpClient;
+        Response: HttpResponseMessage;
+        Request: HttpRequestMessage;
+        URL: Text;
+        ResponseText: Text;
+    begin
+        URL := 'https://openlibrary.org/search/lists.json?q=book&limit=5&offset=0';
+        Request.SetRequestUri(URL);
+        if Client.Send(Request, Response) then begin
+            Response.Content.ReadAs(ResponseText);
+            Message(ResponseText);
+        end;
+
     end;
 
     local procedure FilterPageBuilder()
@@ -136,6 +154,40 @@ codeunit 50002 BusincessCentralPlayground
         //TransactionType only support Report and Xmlport.
     end;
 
+    local procedure DatabaseDatatype()
+    var
+        RecRef: RecordRef;
+        KeyRef: KeyRef;
+    begin
+        RecRef.Open(50000);
+        KeyRef := RecRef.KeyIndex(2);
+        Message('is key enabled :%1', KeyRef.Active);
+        Message('no. of fields %1 defined in current key', KeyRef.FieldCount);
+        RecRef := KeyRef.Record();
+        Message('Database Company Name %1', Database.CompanyName);
+
+        // both are same
+        //Commit();
+        //Database.Commit();
+
+        //The application object or method 'AlterKey' has scope 'OnPrem' and cannot be used for 'Extension' development.ALAL0296
+        //supported only in on-prem
+        //Database.AlterKey(KeyRef, false);    
+        //Database.ChangeUserPassword('123','321');
+        //Database.CheckLicenseFile(343543634);
+    end;
+
+    local procedure GetCompanyMethod()
+    var
+        CompanyName, CompanyId, CompanyURIName : text;
+    begin
+        Message('Company property is static/system function, no need to define datatype');
+        Message('Compnay Display Name function : %1', CompanyProperty.DisplayName());
+        Message('Compnay Id function %1', CompanyProperty.ID());
+        Message('Company URI Name %1', CompanyProperty.UrlName());
+        CompanyURIName := CompanyProperty.UrlName();
+    end;
+
     local procedure StringBuilderFunction()
     var
         Mytext: TextBuilder;
@@ -155,9 +207,6 @@ codeunit 50002 BusincessCentralPlayground
         Message('Length %1', Mytext.Length);
         Message('remove %1', Mytext.Remove(2, 1));
     end;
-
-
-
 
     local procedure CallOverloadedFunction()
     var
