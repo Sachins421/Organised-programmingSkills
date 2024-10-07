@@ -1,5 +1,5 @@
 {
-  "id": "490b6a8a-b955-4559-920d-58af366a5e6c",
+  "id": "cd37ccdc-da0c-4768-90a2-e041b94c97fe",
   "name": "PaymentMgt",
   "publisher": "Default Publisher",
   "version": "1.0.0.0",
@@ -13,7 +13,7 @@
   "dependencies": [],
   "screenshots": [],
   "platform": "1.0.0.0",
-  "application": "24.0.0.0",
+  "application": "21.0.0.0",
   "idRanges": [
     {
       "from": 50000,
@@ -25,7 +25,7 @@
     "allowDownloadingSource": true,
     "includeSourceInSymbolFile": true
   },
-  "runtime": "13.0",
+  "runtime": "14.0",
   "features": [
     "NoImplicitWith"
   ]
