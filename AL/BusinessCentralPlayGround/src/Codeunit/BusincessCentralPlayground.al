@@ -27,7 +27,7 @@ codeunit 50002 BusincessCentralPlayground
         if Client.Send(Request, Response) then begin
             Response.Content.ReadAs(ResponseText);
             Message(ResponseText);
-        end;
+        end
 
     end;
 
@@ -55,7 +55,8 @@ codeunit 50002 BusincessCentralPlayground
         varFilterPageBuilder.AddTable(varDateItem + ' 2', Database::Date);
         varCount := varFilterPageBuilder.COUNT;
         if varCount <> 2 then
-            Error('There should be two controls in FilterPageBuilder');
+            if Confirm('Error was raised, do you want to continue and see the error?', false) then
+                Error('There should be two controls in FilterPageBuilder');
         for varIndex := 1 to varCount do
             Message('Control item %1 is named %2', varIndex, varFilterPageBuilder.Name(varIndex));
         varFilterPageBuilder.RunModal();

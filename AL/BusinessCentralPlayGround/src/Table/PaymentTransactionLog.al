@@ -4,13 +4,14 @@ using Microsoft.Sales.Document;
 table 50000 PaymentTrancsaction
 {
     DataClassification = ToBeClassified;
-    //TableType = c
+    //Extensible = false; // define table can not be extended by table extension
 
     fields
     {
         field(1; "Document Type"; enum "Sales Document Type")
         {
             DataClassification = ToBeClassified;
+
         }
         field(2; "No."; Code[20])
         {
@@ -44,6 +45,7 @@ table 50000 PaymentTrancsaction
 
         key(SK; Source)
         {
+            //Clustered = true; // A clustered key can only be defined once in the same table.
 
         }
     }
