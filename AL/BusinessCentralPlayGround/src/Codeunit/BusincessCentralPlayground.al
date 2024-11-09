@@ -21,13 +21,33 @@ codeunit 50002 BusincessCentralPlayground
         Request: HttpRequestMessage;
         URL: Text;
         ResponseText: Text;
+        Date: Date;
+        Time: Time;
+        Notification: Notification;
     begin
         URL := 'https://openlibrary.org/search/lists.json?q=book&limit=5&offset=0';
         Request.SetRequestUri(URL);
         if Client.Send(Request, Response) then begin
             Response.Content.ReadAs(ResponseText);
             Message(ResponseText);
-        end
+        end;
+        //Date and time
+        Message(Format(Today.Day));
+        Message(Format(Today().DayOfWeek() = 5));  // friday
+        Message(Format(WorkDate().Month() = 5)); // May
+        Message(Format(Time.Hour));
+        Message(Format(Time.Millisecond));
+        Message(Format(Time.Minute));
+        Message(Format(Time.Second));
+        URL := this.Text1; //this represent the current object instance 
+
+        URL := 1 = 2 ? 'True' : 'false'; // Ternay operator instead of if and else
+
+        Notification.Id('345345435');
+        Notification.Message(StrSubstNo('Hello %1', 4)); //placeholder can't be used directly used STRSUBSTNO instead
+        //Notification.AddAction(Caption, CodeUnitID, MethodName); //You can also add an action to the notification. 
+        //This feature allows the user to select the action and run a function in a codeunit. To send an action with a notification, use the AddAction function.
+
 
     end;
 
